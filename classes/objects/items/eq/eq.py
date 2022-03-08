@@ -8,6 +8,7 @@ from backend.classes.objects.items.eq.headgear import Headgear
 from backend.classes.objects.items.eq.luckyItem import LuckyItem
 from backend.classes.objects.items.eq.necklace import Necklace
 from backend.classes.objects.items.eq.ring import Ring
+from backend.classes.objects.items.eq.steed import Steed
 
 
 class Eq:
@@ -20,7 +21,10 @@ class Eq:
         self.luckyItem = LuckyItem()
         self.necklace = Necklace()
         self.ring = Ring()
+
         self.gearStatistics = Statistics()
+
+        self.steed = Steed()
 
     def changeEqItem(self, oldItem: EqItem, newItem: EqItem):
         if oldItem is not None:
