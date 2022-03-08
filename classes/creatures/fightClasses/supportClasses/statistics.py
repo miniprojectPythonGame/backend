@@ -2,12 +2,16 @@ from random import randint
 
 
 class Statistics:
-    def __init__(self, strength, intelligence, dexterity, constitution, luck, persuasion, trade, leadership):
+    def __init__(self, strength=0, intelligence=0, dexterity=0, constitution=0, luck=0, persuasion=0, trade=0,
+                 leadership=0,
+                 protection=0):
         self.strength = strength
         self.intelligence = intelligence
         self.dexterity = dexterity
         self.constitution = constitution
         self.luck = luck
+
+        self.protection = protection
 
         self.hp = constitution * 100
         self.maxHp = constitution * 100
@@ -30,6 +34,7 @@ class Statistics:
                 case 4:
                     self.luck += 1
 
+        self.protection = randint(0, 50)
         self.hp = self.constitution * 100
         self.maxHp = self.constitution * 100
 
@@ -39,3 +44,35 @@ class Statistics:
                '\n' + 'luck: ' + str(self.luck) + '\n' + 'hp: ' + str(self.hp) + \
                '\n' + 'maxHp: ' + str(self.maxHp) + '\n' + 'persuasion: ' + str(self.persuasion) + \
                '\n' + 'trade: ' + str(self.trade) + '\n' + 'leadership: ' + str(self.leadership)
+
+    def __add__(self, other):
+        strength = self.strength + other.strength
+        intelligence = self.intelligence + other.intelligence
+        dexterity = self.dexterity + other.dexterity
+        constitution = self.constitution + other.constitution
+        luck = self.luck + other.luck
+
+        protection = self.protection + other.protection
+
+        persuasion = self.persuasion + other.persuasion
+        trade = self.trade + other.trade
+        leadership = self.leadership + other.leadership
+
+        return Statistics(strength, intelligence, dexterity, constitution, luck, persuasion, trade, leadership,
+                          protection)
+
+    def __sub__(self, other):
+        strength = self.strength - other.strength
+        intelligence = self.intelligence - other.intelligence
+        dexterity = self.dexterity - other.dexterity
+        constitution = self.constitution - other.constitution
+        luck = self.luck - other.luck
+
+        protection = self.protection - other.protection
+
+        persuasion = self.persuasion - other.persuasion
+        trade = self.trade - other.trade
+        leadership = self.leadership - other.leadership
+
+        return Statistics(strength, intelligence, dexterity, constitution, luck, persuasion, trade, leadership,
+                          protection)
