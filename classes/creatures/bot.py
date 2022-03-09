@@ -1,10 +1,8 @@
-from backend.classes.creatures.fightClasses.supportClasses.lvl import Lvl
-from backend.classes.creatures.supportFunctions import choseClass
+from backend.classes.creatures.creature import Creature
+from backend.classes.creatures.fightClasses.supportClasses.weapon import Weapon
 
 
-class Bot:
+class Bot(Creature):
     def __init__(self, name, className, lvl=1):
-        self.name = name
-        self.heroClass = choseClass(className)
-        self.lvl = Lvl(lvl)
+        Creature.__init__(self, name, className, Weapon(), lvl)
         self.heroClass.statistics.setFightStatistics(self.lvl.freeDevelopmentPoints)
