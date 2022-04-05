@@ -127,7 +127,7 @@ if __name__ == "__main__":
     # tmp.currentHero.addExp(10000)
     # print(tmp.currentHero)
     tmp.currentHero.eq.get_storage()
-    tmp.currentHero.eq.sell_item(12)
+    # tmp.currentHero.eq.sell_item(12)
     # tmp.currentHero.eq.swap_places(2, 11)
     # tmp.currentHero.eq.swap_places(9, 12)
     # tmp.currentHero.eq.equip_item_from_storage(1)
