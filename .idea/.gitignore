@@ -6,9 +6,9 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-/src/web/WebService.py
 /misc.xml
 modules.xml
 Projekty.iml
 vcs.xml
 /inspectionProfiles/
+/src/web/WebService.py
