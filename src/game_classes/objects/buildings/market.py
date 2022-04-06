@@ -2,7 +2,8 @@ from src.game_classes.objects.items.soldItem import SoldItem
 
 
 class Market:
-    def __init__(self):
+    def __init__(self, hero_id):
+        self.hero_id = hero_id
         self.soldItems = []
 
     def sellItem(self, name, price, description, ownerUID, amount):

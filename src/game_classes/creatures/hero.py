@@ -5,10 +5,8 @@ from src.game_classes.creatures.creature import Creature
 from src.game_classes.objects.buildings.cityGuilds import CityGuilds
 from src.game_classes.objects.buildings.guild import Guild
 from src.game_classes.objects.buildings.market import Market
-from src.game_classes.objects.buildings.shops.armourShop import ArmourShop
-from src.game_classes.objects.buildings.shops.magicShop import MagicShop
-from src.game_classes.objects.buildings.shops.stable import Stable
-from src.game_classes.objects.buildings.shops.weaponShop import WeaponShop
+from src.game_classes.objects.buildings.shops import ArmourShop, Stable, WeaponShop, MagicShop, MercenaryShop
+
 from src.game_classes.objects.items.eq import Eq
 
 from src.web.WebService import *
@@ -31,13 +29,13 @@ class Hero(Creature):
         self.expToNextLvl = expToNextLvl
 
         self.armourShop = ArmourShop(hero_id)
-        # self.magicShop = MagicShop(hero_id)
-        # self.weaponShop = WeaponShop(hero_id)
+        self.magicShop = MagicShop(hero_id)
+        self.weaponShop = WeaponShop(hero_id)
         self.stable = Stable(hero_id)  # TODO to be done in the future
-        # self.guild = Guild(hero_id)  # TODO to be done in the future
+        self.guild = Guild(hero_id)  # TODO to be done in the future
         self.cityGuilds = CityGuilds(hero_id)  # TODO to be done in the future
-        # self.market = Market(hero_id)  # TODO to be done in the future
-        # self.mercenaryShop = MercenaryShop(hero_id)  # TODO to be done in the future
+        self.market = Market(hero_id)  # TODO to be done in the future
+        self.mercenaryShop = MercenaryShop(hero_id)  # TODO to be done in the future
 
     def __str__(self):
         return "| hero_id: " + str(self.hero_id) + "| Hero name: " + self.name + "| exp: " + str(self.exp) + \
