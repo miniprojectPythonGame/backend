@@ -5,7 +5,7 @@ from src.game_classes.creatures.creature import Creature
 from src.game_classes.objects.buildings.cityGuilds import CityGuilds
 from src.game_classes.objects.buildings.guild import Guild
 from src.game_classes.objects.buildings.market import Market
-from src.game_classes.objects.buildings.shops import ArmourShop, Stable, WeaponShop, MagicShop, MercenaryShop
+from src.game_classes.objects.buildings.shops import ArmourShop, Stable, WeaponShop, MagicShop, MercenaryShop, ShopType
 
 from src.game_classes.objects.items.eq import Eq
 
@@ -79,3 +79,62 @@ class Hero(Creature):
         except Exception as error:
             print("Email already exists: " + str(error))
             return False
+
+    def buy_from_shop(self, item_slot_id: int, shop_type: int):
+        if shop_type == ShopType.ArmourShop.value:
+            bought_item = self.armourShop.buyFromShop(item_slot_id, self.eq.gold)
+            result = self.eq.add_item(bought_item)
+
+            if result:
+                print("Item successfully added!")
+                return True
+            else:
+                print("Something went wrong!")
+                return False
+
+        if shop_type == ShopType.MagicShop.value:
+            bought_item = self.magicShop.buyFromShop(item_slot_id, self.eq.gold)
+            result = self.eq.add_item(bought_item)
+
+            if result:
+                print("Item successfully added!")
+                return True
+            else:
+                print("Something went wrong!")
+                return False
+
+        if shop_type == ShopType.WeaponShop.value:
+            bought_item = self.weaponShop.buyFromShop(item_slot_id, self.eq.gold)
+            result = self.eq.add_item(bought_item)
+
+            if result:
+                print("Item successfully added!")
+                return True
+            else:
+                print("Something went wrong!")
+                return False
+
+        if shop_type == ShopType.Stable.value:
+            bought_item = self.stable.buyFromShop(item_slot_id, self.eq.gold)
+            result = self.eq.add_item(bought_item)
+
+            if result:
+                print("Item successfully added!")
+                return True
+            else:
+                print("Something went wrong!")
+                return False
+        if shop_type == ShopType.MercenaryShop.value:
+            print("Not implemented!")
+            return False
+            # bought_item = self.mercenaryShop.buyFromShop(item_slot_id, self.eq.gold)
+            # result = self.eq.add_item(bought_item)
+            #
+            # if result:
+            #     print("Item successfully added!")
+            #     return True
+            # else:
+            #     print("Something went wrong!")
+            #     return False
+        print("Incorrect shop type")
+        return False

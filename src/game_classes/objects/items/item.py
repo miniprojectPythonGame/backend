@@ -14,7 +14,8 @@ class Item:
 
     def __str__(self):
         return '----------------------\nName: ' + self.name + '\nprice: ' + \
-               str(self.price) + '\ndescription: ' + self.description + '\n----------------------'
+               str(self.price) + '\ndescription: ' + self.description + \
+               '\nitem_id: ' + str(self.item_id) + '\n----------------------'
 
 
 class ItemType(Enum):
@@ -243,3 +244,11 @@ class ItemBuilder(object):
             newItem = -1
 
         return newItem
+
+    @classmethod
+    def all_info_select(cls, item_id: int):
+        select = "SELECT I.name,I.price,I.description,I.only_treasure,I.item_type_id,I.min_lvl,I.for_class," \
+                 "s.strength,s.intelligence,s.dexterity,s.constitution,s.luck,s.persuasion,s.trade,s.leadership," \
+                 "s.protection,s.initiative FROM items I JOIN statistics s on s.statistics_id = I.statistics_id" \
+                 " WHERE I.item_id = " + str(item_id) + ";"
+        return select

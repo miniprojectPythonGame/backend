@@ -124,11 +124,9 @@ if __name__ == "__main__":
     # for i in tmp.Heroes:
     #     print(tmp.Heroes[i])
     tmp.chooseHero(20)
-    # tmp.currentHero.addExp(10000)
-    # print(tmp.currentHero)
-    tmp.currentHero.eq.get_storage()
-    # tmp.currentHero.eq.sell_item(12)
-    # tmp.currentHero.eq.swap_places(2, 11)
-    # tmp.currentHero.eq.swap_places(9, 12)
-    # tmp.currentHero.eq.equip_item_from_storage(1)
-    # tmp.currentHero.armourShop.print()
+
+    # tmp.currentHero.buy_from_shop(0, 0)
+    # tmp.currentHero.buy_from_shop(0, 1)
+    # tmp.currentHero.buy_from_shop(0, 2)
+    # tmp.currentHero.buy_from_shop(0, 3)
+    # tmp.currentHero.buy_from_shop(0, 4)

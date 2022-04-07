@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 
 from src.game_classes.objects.items.item import ItemBuilder
 from src.web.WebService import connect_to_db, disconnect_from_db
@@ -8,34 +9,66 @@ class Shop(ABC):
     def __init__(self, hero_id):
         self.itemList = []
         self.hero_id = hero_id
-        self.relevant_item_types = ()
+        self.shop_name_in_db = ""
 
-    @abstractmethod
-    def removeItem(self, itemID):
-        pass  # TODO remove item from the shop adding new random one
+    def buyFromShop(self, item_slot_id: int, money: int):
+        if money >= self.itemList[item_slot_id].price:
+            try:
+                conn, cursor = connect_to_db()
+                call = "CALL sell_item_from_" + self.shop_name_in_db + "(%s,%s)"
+                cursor.execute(call,
+                               (self.hero_id, self.itemList[item_slot_id].item_id))
+                conn.commit()
 
-    @abstractmethod
-    def buyFromShop(self, itemID):
-        pass  # TODO take money from hero and give him item, removing item from the shop
+                select = "SELECT item_id from " + self.shop_name_in_db + " where hero_id = %s and item_slot_id = %s"
+
+                cursor.execute(select, (self.hero_id, item_slot_id))
+
+                new_id = cursor.fetchall()[0][0]
+                print(new_id)
+                bought_item = self.itemList[item_slot_id]
+                print(self.itemList[item_slot_id].item_id)
+                if new_id is not None:
+                    cursor.execute(ItemBuilder.all_info_select(new_id))
+                    self.itemList[item_slot_id] = ItemBuilder.build_item(self.itemList[item_slot_id].item_id,
+                                                                         cursor.fetchall()[0])
+                disconnect_from_db(conn, cursor)
+                return bought_item
+            except Exception as error:
+                print(error)
+                return False
+        return False
+
+    def get_shop_items(self):
+        self.itemList = []
+        try:
+            conn, cursor = connect_to_db()
+            select = "SELECT item_id from " + self.shop_name_in_db + " where hero_id = " + str(
+                self.hero_id) + " order by item_slot_id desc;"
+            cursor.execute(select)
+
+            item_ids = cursor.fetchall()
+            for i in item_ids:
+                item_id = i[0]
+                if item_id is not None:
+                    cursor.execute(ItemBuilder.all_info_select(item_id))
+                    self.itemList.append(ItemBuilder.build_item(item_id, cursor.fetchall()[0]))
+            disconnect_from_db(conn, cursor)
+        except Exception as error:
+            print(error)
 
     def refresh(self):
         self.itemList = []
         try:
             conn, cursor = connect_to_db()
-            select = "SELECT item_id from items where owner_id is NULL and item_type_id in " + str(self.relevant_item_types) + ";"
-            cursor.execute(select)
-            item_ids = cursor.fetchall()
-            for i in item_ids:
-                item_id = i[0]
-                cursor.execute(
-                    "SELECT I.name,I.price,I.description,I.only_treasure,I.item_type_id,I.min_lvl,I.for_class,s.strength,"
-                    "s.intelligence,s.dexterity,s.constitution,s.luck,s.persuasion,s.trade,s.leadership,s.protection,s.initiative"
-                    " FROM items I JOIN statistics s on s.statistics_id = I.statistics_id WHERE I.item_id = %s;",
-                    (item_id,))
-                self.itemList.append(ItemBuilder.build_item(item_id, cursor.fetchall()[0]))
+            call = "CALL refresh_" + self.shop_name_in_db + "_for_hero(" + str(self.hero_id) + ");"
+            cursor.execute(call)
+            conn.commit()
             disconnect_from_db(conn, cursor)
         except Exception as error:
             print(error)
+
+        self.get_shop_items()
 
     def print(self):
         print(type(self).__name__)
@@ -46,75 +79,42 @@ class Shop(ABC):
 class ArmourShop(Shop):
     def __init__(self, hero_id):
         Shop.__init__(self, hero_id)
-        self.relevant_item_types = (0, 1, 2, 3, 4)
-        self.refresh()
+        self.shop_name_in_db = "armour_shop"
+        self.get_shop_items()
 
-    def removeItem(self, itemID):
-        pass
 
-    def buyFromShop(self, itemID):
-        pass
+class ShopType(Enum):
+    ArmourShop = 0
+    MagicShop = 1
+    MercenaryShop = 2
+    Stable = 3
+    WeaponShop = 4
 
 
 class MagicShop(Shop):
     def __init__(self, hero_id):
         Shop.__init__(self, hero_id)
-        self.relevant_item_types = (5, 6, 7, 11, 12)
-        self.refresh()
-
-    def refresh(self):
-        pass
-
-    def removeItem(self, itemID):
-        pass
-
-    def buyFromShop(self, itemID):
-        pass
+        self.shop_name_in_db = "magic_shop"
+        self.get_shop_items()
 
 
 class MercenaryShop(Shop):
     def __init__(self, hero_id):
         Shop.__init__(self, hero_id)
-        # self.refresh()
-        pass
-
-    def refresh(self):
-        pass
-
-    def removeItem(self, itemID):
-        pass
-
-    def buyFromShop(self, itemID):
+        self.shop_name_in_db = "???"  # TODO add table in db later
+        # self.get_shop_items()
         pass
 
 
 class Stable(Shop):
     def __init__(self, hero_id):
         Shop.__init__(self, hero_id)
-        self.relevant_item_types = (8,)
-        self.refresh()
-
-    def refresh(self):
-        pass
-
-    def removeItem(self, itemID):
-        pass
-
-    def buyFromShop(self, itemID):
-        pass
+        self.shop_name_in_db = "steed_shop"
+        self.get_shop_items()
 
 
 class WeaponShop(Shop):
     def __init__(self, hero_id):
         Shop.__init__(self, hero_id)
-        self.relevant_item_types = (9, 10)
-        self.refresh()
-
-    def refresh(self):
-        pass
-
-    def removeItem(self, itemID):
-        pass
-
-    def buyFromShop(self, itemID):
-        pass
+        self.shop_name_in_db = "weapon_shop"
+        self.get_shop_items()

@@ -1,7 +1,7 @@
 import random
 
 from src.game_classes.creatures.statistics import Statistics
-from src.game_classes.objects.items.item import ItemBuilder
+from src.game_classes.objects.items.item import ItemBuilder, Item
 from src.web.WebService import connect_to_db, disconnect_from_db
 
 
@@ -12,6 +12,7 @@ class Eq:
         self.gearStatistics = Statistics()
         self.className = className
         self.gold = gold
+        self.get_storage()
 
     def __changeEqItem(self, in_eq, in_storage):
         if self.itemSlots[in_eq] is not None:
@@ -39,8 +40,6 @@ class Eq:
 
                 self.itemSlots[item[2]] = ItemBuilder.build_item(item_id, cursor.fetchall()[0])
             disconnect_from_db(conn, cursor)
-            for i in self.itemSlots:
-                print(str(i))
         except Exception as error:
             print(error)
 
@@ -109,6 +108,21 @@ class Eq:
                 conn.commit()
                 disconnect_from_db(conn, cursor)
                 self.gold += earned_money
+                return True
+            except Exception as error:
+                print(error)
+                return False
+        return False
+
+    def add_item(self, item: Item):
+        if item is not False:
+            try:
+                conn, cursor = connect_to_db()
+                cursor.execute("SELECT item_slot_id FROM storage where hero_id = %s and item_id = %s",
+                               (self.hero_id, item.item_id))
+                self.itemSlots[cursor.fetchall()[0][0]] = item
+                disconnect_from_db(conn, cursor)
+                self.gold -= item.price
                 return True
             except Exception as error:
                 print(error)
