@@ -119,6 +119,16 @@ class Steed(Item):
 class PrimaryWeapon(Item):
     def __init__(self, statistics: Statistics, name, price, description, for_class, item_id):
         Item.__init__(self, name, price, description, statistics, for_class, item_id)
+        if for_class == "w":
+            self.min_dmg = statistics.strength*15
+        elif for_class == "a":
+            self.min_dmg = statistics.dexterity*15
+        elif for_class == "m":
+            self.min_dmg = statistics.intelligence*15
+        else:
+            self.min_dmg = statistics.strength*5 + statistics.dexterity*5 + statistics.intelligence*5
+
+        self.max_dmg = self.min_dmg * 10 * statistics.luck
 
     @classmethod
     def get_code(cls):

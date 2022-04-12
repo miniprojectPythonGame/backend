@@ -28,6 +28,8 @@ class Hero(Creature):
         self.exp = exp
         self.expToNextLvl = expToNextLvl
 
+        self.messages = None  # TODO to implement for notifications after buying selling or fights
+
         self.armourShop = ArmourShop(hero_id)
         self.magicShop = MagicShop(hero_id)
         self.weaponShop = WeaponShop(hero_id)
@@ -127,14 +129,8 @@ class Hero(Creature):
         if shop_type == ShopType.MercenaryShop.value:
             print("Not implemented!")
             return False
-            # bought_item = self.mercenaryShop.buyFromShop(item_slot_id, self.eq.gold)
-            # result = self.eq.add_item(bought_item)
-            #
-            # if result:
-            #     print("Item successfully added!")
-            #     return True
-            # else:
-            #     print("Something went wrong!")
-            #     return False
         print("Incorrect shop type")
         return False
+
+    def init_fight_with_other_hero(self, hero_id):
+        pass
