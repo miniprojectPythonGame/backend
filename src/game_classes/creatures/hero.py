@@ -2,6 +2,7 @@ from math import floor
 from random import randint
 
 from src.game_classes.creatures.creature import Creature
+from src.game_classes.events.battle import Battle
 from src.game_classes.objects.buildings.cityGuilds import CityGuilds
 from src.game_classes.objects.buildings.guild import Guild
 from src.game_classes.objects.buildings.market import Market
@@ -16,13 +17,15 @@ class Hero(Creature):
     def __init__(self, name, className, gold=0, strength=None, intelligence=None,
                  dexterity=None,
                  constitution=None, luck=None, persuasion=None, trade=None, leadership=None, protection=None,
-                 initiative=None, lvl=None, exp=None, expToNextLvl=None, freeDevelopmentPts=None, hero_id=None):
+                 initiative=None, lvl=None, exp=None, expToNextLvl=None, freeDevelopmentPts=None, hero_id=None,
+                 statistics_id=None):
 
         Creature.__init__(self, name, className, lvl, strength, intelligence, dexterity,
                           constitution, luck, persuasion, trade, leadership, protection,
                           initiative, freeDevelopmentPts)
         self.hero_id = hero_id
         self.eq = Eq(hero_id, className, gold)
+        self.statistics_id = statistics_id
 
         self.lvl = lvl
         self.exp = exp
@@ -61,11 +64,49 @@ class Hero(Creature):
             print("Email already exists " + str(error))
             return False
 
-    def usePoints(self):
+    def add_to_statistics(self, statistic_name):
         if self.freeDevelopmentPoints > 0:
             self.freeDevelopmentPoints -= 1
 
-        return self.freeDevelopmentPoints > 0
+            if statistic_name == 'strength':
+                self.heroClass.statistics.strength += 1
+            elif statistic_name == 'intelligence':
+                self.heroClass.statistics.intelligence += 1
+            elif statistic_name == 'dexterity':
+                self.heroClass.statistics.dexterity += 1
+            elif statistic_name == 'constitution':
+                self.heroClass.statistics.constitution += 1
+            elif statistic_name == 'luck':
+                self.heroClass.statistics.luck += 1
+            elif statistic_name == 'protection':
+                self.heroClass.statistics.protection += 1
+            elif statistic_name == 'persuasion':
+                self.heroClass.statistics.persuasion += 1
+            elif statistic_name == 'trade':
+                self.heroClass.statistics.trade += 1
+            elif statistic_name == 'leadership':
+                self.heroClass.statistics.leadership += 1
+            elif statistic_name == 'initiative':
+                self.heroClass.statistics.initiative += 1
+
+            try:
+                conn, cursor = connect_to_db()
+                statistics_update = "UPDATE statistics SET " + statistic_name + " = " + statistic_name + " + 1 WHERE statistics_id = " + \
+                                    str(self.statistics_id)
+                cursor.execute(statistics_update)
+
+                heroes_update = "UPDATE heroes SET free_development_pts = free_development_pts - 1 WHERE hero_id = " + \
+                                str(self.hero_id)
+                cursor.execute(heroes_update)
+
+                conn.commit()
+                disconnect_from_db(conn, cursor)
+                return True
+            except Exception as error:
+                print(error)
+                return False
+
+        return False
 
     def __updateAfterLvlUp(self):
         try:
@@ -132,5 +173,5 @@ class Hero(Creature):
         print("Incorrect shop type")
         return False
 
-    def init_fight_with_other_hero(self, hero_id):
-        pass
+    def init_fight_with_other_hero(self, enemy):
+        Battle.hero_vs_hero(self, enemy)

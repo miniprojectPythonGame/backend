@@ -64,7 +64,7 @@ class User:
                 cursor.execute("SELECT * FROM STATISTICS WHERE STATISTICS_ID = %s", (i[7],))
                 s = cursor.fetchall()[0]
                 self.Heroes[i[2]] = Hero(i[0], i[6], i[3], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9],
-                                         s[10], i[4], i[5], i[10], i[9], i[2])
+                                         s[10], i[4], i[5], i[10], i[9], i[2], i[7])
             disconnect_from_db(conn, cursor)
         except Exception as error:
             print(error)
@@ -127,7 +127,7 @@ class User:
                 cursor.execute("SELECT * FROM STATISTICS WHERE STATISTICS_ID = %s", (i[7],))
                 s = cursor.fetchall()[0]
                 all_existing_heroes[i[2]] = Hero(i[0], i[6], i[3], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9],
-                                                 s[10], i[4], i[5], i[10], i[9], i[2])
+                                                 s[10], i[4], i[5], i[10], i[9], i[2], i[7])
             disconnect_from_db(conn, cursor)
             return all_existing_heroes
         except Exception as error:
@@ -141,6 +141,9 @@ if __name__ == "__main__":
     tmp.login('konto@gmail.com', 'alamakota')
     # tmp.createHero('testx', 'w', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     tmp.chooseHero(20)
+    # tmp.currentHero.add_to_statistics('dexterity')
+    # tmp.currentHero.add_to_statistics('luck')
+    print(tmp.currentHero)
     # tmp.currentHero.armourShop.print()
     # tmp.currentHero.buy_from_shop(0, 0)
     # tmp.currentHero.buy_from_shop(0, 1)
